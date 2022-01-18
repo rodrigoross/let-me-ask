@@ -1,0 +1,77 @@
+<template>
+  <img src="@/assets/icons/logo.svg" alt="Let me Ask" />
+  <BaseButton class="create-room">
+    <img src="@/assets/icons/google-icon.svg" alt="Login com o Google" />
+    Crie sua sala como o Google
+  </BaseButton>
+  <div class="separator">Ou entre em uma sala</div>
+  <form>
+    <input type="text" name="codigo" id="codigo" />
+    <BaseButton type="submit">Entrar na sala</BaseButton>
+  </form>
+</template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+import BaseButton from "@/components/BaseButton.vue";
+
+export default defineComponent({
+  name: "Login",
+  components: {
+    BaseButton,
+  },
+});
+</script>
+
+<style lang="scss" scoped>
+.create-room {
+  margin-top: 3.125rem;
+  height: 3.12rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  background: var(--red-500);
+  color: var(--white);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+  border: 0;
+
+  transition: filter 0.2s;
+
+  img {
+    margin-right: 0.5rem;
+  }
+
+  &:hover {
+    filter: brightness(0.9);
+  }
+}
+
+.separator {
+  font-size: 0.875rem;
+  color: var(--gray-200);
+
+  margin: 2rem 0;
+  display: flex;
+  align-items: center;
+
+  &::before {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--gray-200);
+    margin-right: 1rem;
+  }
+
+  &::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--gray-200);
+    margin-left: 1rem;
+  }
+}
+</style>

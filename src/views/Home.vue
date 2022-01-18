@@ -1,25 +1,16 @@
 <template>
   <div class="page-auth">
     <aside>
-      <img src="@/assets/icons/illustration.svg" alt="Ilustração de perguntas sendo respondidas" />
+      <img
+        src="@/assets/icons/illustration.svg"
+        alt="Ilustração de perguntas sendo respondidas"
+      />
       <strong>Toda pergunta tem uma resposta.</strong>
-      <p>
-        Aprenda e compartilhe conhecimento
-        com outras pessoas
-      </p>
+      <p>Aprenda e compartilhe conhecimento com outras pessoas</p>
     </aside>
     <main>
       <div class="main-content">
-        <img src="@/assets/icons/logo.svg" alt="Let me Ask" />
-        <BaseButton class="create-room">
-          <img src="@/assets/icons/google-icon.svg" alt="Login com o Google" />
-          Crie sua sala como o Google
-        </BaseButton>
-        <div class="separator">Ou entre em uma sala</div>
-        <form>
-          <input type="text" name="codigo" id="codigo" />
-          <BaseButton type="submit">Entrar na sala</BaseButton>
-        </form>
+        <router-view />
       </div>
     </main>
   </div>
@@ -27,19 +18,15 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import BaseButton from "@/components/BaseButton.vue";
 
 export default defineComponent({
   name: "Home",
-  components: {
-    BaseButton
-  }
   // setup() {
   // },
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .page-auth {
   display: flex;
   align-items: stretch;
@@ -97,6 +84,12 @@ export default defineComponent({
       align-self: center;
     }
 
+    h2 {
+      font-size: 1.5rem;
+      margin: 4rem 0 1.5rem;
+      font-family: "Poppins", sans-serif;
+    }
+
     form {
       input {
         height: 3rem;
@@ -115,56 +108,14 @@ export default defineComponent({
         width: 100%;
       }
     }
-  }
+    p {
+      font-size: 0.875rem;
+      color: var(--gray-500);
+      margin-top: 1rem;
 
-  .create-room {
-    margin-top: 3.125rem;
-    height: 3.12rem;
-    border-radius: 0.5rem;
-    font-weight: 500;
-    background: var(--red-500);
-    color: var(--white);
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    cursor: pointer;
-    border: 0;
-
-    transition: filter 0.2s;
-
-    img {
-      margin-right: 0.5rem;
-    }
-
-    &:hover {
-      filter: brightness(0.9);
-    }
-  }
-
-  .separator {
-    font-size: 0.875rem;
-    color: var(--gray-200);
-
-    margin: 2rem 0;
-    display: flex;
-    align-items: center;
-
-    &::before {
-      content: "";
-      flex: 1;
-      height: 1px;
-      background: var(--gray-200);
-      margin-right: 1rem;
-    }
-
-    &::after {
-      content: "";
-      flex: 1;
-      height: 1px;
-      background: var(--gray-200);
-      margin-left: 1rem;
+      a {
+        color: var(--pink);
+      }
     }
   }
 }
