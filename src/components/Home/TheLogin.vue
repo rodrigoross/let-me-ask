@@ -34,8 +34,6 @@ export default defineComponent({
     const roomCode = ref("");
 
     async function handleLogin() {
-      console.log(store.state.user);
-
       if (!store.state.user) {
         await store.dispatch(ActionTypes.SIGN_WITH_GOOGLE);
       }
