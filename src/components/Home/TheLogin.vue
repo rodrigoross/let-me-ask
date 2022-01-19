@@ -6,17 +6,21 @@
   </BaseButton>
   <div class="separator">Ou entre em uma sala</div>
   <form>
-    <input type="text" name="codigo" id="codigo" />
-    <BaseButton type="submit">Entrar na sala</BaseButton>
+    <input type="text" name="codigo" id="codigo" v-model="roomCode" />
+    <BaseButton type="submit" @click.prevent="handleJoinRoom"
+      >Entrar na sala</BaseButton
+    >
   </form>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import BaseButton from "@/components/BaseButton.vue";
 import { useStore } from "@/store";
 import { ActionTypes } from "@/store/actions";
 import { useRouter } from "vue-router";
+import { get, ref as databaseRef } from "@firebase/database";
+import { database } from "@/services/firebase";
 
 export default defineComponent({
   name: "Login",
@@ -26,6 +30,8 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const router = useRouter();
+
+    const roomCode = ref("");
 
     async function handleLogin() {
       console.log(store.state.user);
@@ -37,8 +43,28 @@ export default defineComponent({
       router.push("/rooms/new");
     }
 
+    async function handleJoinRoom() {
+      console.log(roomCode.value);
+
+      if (roomCode.value.trim() === "") return;
+
+      // Verifica se a sala existe
+      const roomRef = await get(
+        databaseRef(database, `rooms/${roomCode.value}`)
+      );
+
+      if (!roomRef.exists()) {
+        alert("Sala não existe!");
+        return;
+      }
+
+      router.push(`/rooms/${roomCode.value}`);
+    }
+
     return {
+      roomCode,
       handleLogin,
+      handleJoinRoom,
     };
   },
 });
