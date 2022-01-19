@@ -1,6 +1,6 @@
 <template>
   <img src="@/assets/icons/logo.svg" alt="Let me Ask" />
-  <BaseButton class="create-room">
+  <BaseButton class="create-room" @click="handleLogin">
     <img src="@/assets/icons/google-icon.svg" alt="Login com o Google" />
     Crie sua sala como o Google
   </BaseButton>
@@ -14,11 +14,32 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import BaseButton from "@/components/BaseButton.vue";
+import { useStore } from "@/store";
+import { ActionTypes } from "@/store/actions";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "Login",
   components: {
     BaseButton,
+  },
+  setup() {
+    const store = useStore();
+    const router = useRouter();
+
+    async function handleLogin() {
+      console.log(store.state.user);
+
+      if (!store.state.user) {
+        await store.dispatch(ActionTypes.SIGN_WITH_GOOGLE);
+      }
+
+      router.push("/rooms/new");
+    }
+
+    return {
+      handleLogin,
+    };
   },
 });
 </script>
