@@ -13,7 +13,7 @@
         <span>2 Perguntas</span>
       </div>
       <form>
-        <textarea name="pergunta" id="pergunta"></textarea>
+        <textarea name="pergunta" id="pergunta" v-model="newQuestion" />
         <div class="form-footer">
           <div class="user-info" v-if="user">
             <img :src="user.avatar" :alt="user.name" />
@@ -24,11 +24,13 @@
             <button @click.prevent="handleLogin">faça seu login</button>.
           </span>
 
-          <BaseButton> Enviar pergunta </BaseButton>
+          <BaseButton @click.prevent="handleSendQuestion">
+            Enviar pergunta
+          </BaseButton>
         </div>
       </form>
 
-      <div class="question-list">
+      <div class="newQuestion-list">
         <img
           src="@/assets/icons/empty-questions.svg"
           alt="Sem perguntas exibidas"
@@ -46,6 +48,8 @@ import { useRoute } from "vue-router";
 import BaseButton from "@/components/BaseButton.vue";
 import RoomCode from "@/components/Room/RoomCode.vue";
 import { ActionTypes } from "@/store/actions";
+import { child, push, ref as databaseRef } from "@firebase/database";
+import { database } from "@/services/firebase";
 
 export default defineComponent({
   components: {
@@ -58,15 +62,41 @@ export default defineComponent({
 
     const user = computed(() => store.state.user);
     const roomId = ref(route.params.id);
+    const newQuestion = ref("");
 
     async function handleLogin() {
-      const response = await store.dispatch(ActionTypes.SIGN_WITH_GOOGLE);
+      await store.dispatch(ActionTypes.SIGN_WITH_GOOGLE);
     }
+
+    const handleSendQuestion = async () => {
+      if (newQuestion.value.trim() === "") return;
+
+      const question = {
+        content: newQuestion.value,
+        author: {
+          name: user.value?.name,
+          avatar: user.value?.avatar,
+        },
+        isHighlighted: false,
+        isAnswered: false,
+      };
+
+      // Pega referencia das perguntas da sala
+      const questionRef = child(
+        databaseRef(database),
+        `rooms/${roomId.value}/questions`
+      );
+
+      await push(questionRef, question);
+      newQuestion.value = "";
+    };
 
     return {
       user,
       roomId,
+      newQuestion,
       handleLogin,
+      handleSendQuestion,
     };
   },
 });
@@ -182,7 +212,7 @@ export default defineComponent({
       }
     }
 
-    .question-list {
+    .newQuestion-list {
       margin-top: 2rem;
     }
   }
