@@ -1,10 +1,13 @@
 import { googleHandler } from "@/composables/useGoogleLogin";
+import { auth } from "@/services/firebase";
+import { Unsubscribe } from "firebase/auth";
 import { ActionContext, ActionTree } from "vuex";
 import { Mutations, MutationTypes } from "./mutations";
 import { RootState } from "./state";
 
 export enum ActionTypes {
   SIGN_WITH_GOOGLE = "SIGN_WITH_GOOGLE",
+  RETRIEVE_SIGNED_USER = "RETRIEVE_SIGNED_USER",
 }
 
 // Sobreescreve commit do contexto
@@ -19,6 +22,9 @@ type AugmentedActionContext = {
 // Action types
 export interface Actions {
   [ActionTypes.SIGN_WITH_GOOGLE]({ commit }: AugmentedActionContext): void;
+  [ActionTypes.RETRIEVE_SIGNED_USER]({
+    commit,
+  }: AugmentedActionContext): Promise<Unsubscribe>;
 }
 
 export const actions: ActionTree<RootState, RootState> & Actions = {
@@ -38,5 +44,26 @@ export const actions: ActionTree<RootState, RootState> & Actions = {
         avatar: photoURL,
       });
     }
+  },
+
+  async [ActionTypes.RETRIEVE_SIGNED_USER]({ commit }) {
+    // const user = state.user;
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        const { displayName, photoURL, uid } = user;
+
+        if (!displayName || !photoURL) {
+          throw new Error("Informações da conta Google estão incompletas.");
+        }
+
+        commit(MutationTypes.SET_USER, {
+          id: uid,
+          name: displayName,
+          avatar: photoURL,
+        });
+      }
+    });
+
+    return unsubscribe;
   },
 };
