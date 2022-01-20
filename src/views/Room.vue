@@ -37,7 +37,16 @@
           v-if="!questions.length"
         />
         <template v-else>
-          {{ JSON.stringify(questions) }}
+          <Question
+            v-for="question in questions"
+            :key="question.id"
+            :content="question.content"
+            :author="question.author"
+            :isAnswered="question.isAnswered"
+            :isHighlighted="question.isHighlighted"
+          >
+            Botoes
+          </Question>
         </template>
       </div>
     </main>
@@ -51,6 +60,8 @@ import { onBeforeRouteLeave, useRoute } from "vue-router";
 
 import BaseButton from "@/components/BaseButton.vue";
 import RoomCode from "@/components/Room/RoomCode.vue";
+import Question from "@/components/Question/Question.vue";
+
 import { ActionTypes } from "@/store/actions";
 import { child, push, ref as databaseRef } from "@firebase/database";
 import { database } from "@/services/firebase";
@@ -63,6 +74,7 @@ export default defineComponent({
   components: {
     BaseButton,
     RoomCode,
+    Question,
   },
   setup() {
     const store = useStore();
@@ -186,6 +198,7 @@ export default defineComponent({
         box-shadow: 0 1px 12px rgba(8, 0, 0, 0.8);
         resize: vertical;
         min-height: 8.125rem; // 130px
+        background: var(--white);
       }
 
       .form-footer {
@@ -233,7 +246,7 @@ export default defineComponent({
       }
     }
 
-    .newQuestion-list {
+    .question-list {
       margin-top: 2rem;
     }
   }
