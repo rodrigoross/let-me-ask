@@ -42,8 +42,6 @@ export default defineComponent({
     }
 
     async function handleJoinRoom() {
-      console.log(roomCode.value);
-
       if (roomCode.value.trim() === "") return;
 
       // Verifica se a sala existe

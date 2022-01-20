@@ -3,17 +3,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeUnmount } from "vue";
+import { defineComponent } from "vue";
 import { useStore } from "./store";
 import { ActionTypes } from "./store/actions";
 
 export default defineComponent({
   setup() {
     const store = useStore();
-
-    const unsubscribe = store.dispatch(ActionTypes.RETRIEVE_SIGNED_USER);
-
-    onBeforeUnmount(unsubscribe);
+    store.dispatch(ActionTypes.RETRIEVE_SIGNED_USER);
+    // onBeforeUnmount(unsubscribe());
   },
 });
 </script>

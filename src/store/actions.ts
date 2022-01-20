@@ -1,13 +1,17 @@
 import { googleHandler } from "@/composables/useGoogleLogin";
-import { auth } from "@/services/firebase";
+import { auth, database } from "@/services/firebase";
 import { Unsubscribe } from "firebase/auth";
+import { onValue, ref } from "firebase/database";
 import { ActionContext, ActionTree } from "vuex";
 import { Mutations, MutationTypes } from "./mutations";
 import { RootState } from "./state";
+import { FirebaseQuestions, Question } from "./types";
 
 export enum ActionTypes {
   SIGN_WITH_GOOGLE = "SIGN_WITH_GOOGLE",
   RETRIEVE_SIGNED_USER = "RETRIEVE_SIGNED_USER",
+  RETRIEVE_ROOM_DATA = "RETRIEVE_ROOM_DATA",
+  UNSUBSCRIBE_ROOM_LISTENER = "UNSUBSCRIBE_ROOM_LISTENER",
 }
 
 // Sobreescreve commit do contexto
@@ -25,6 +29,13 @@ export interface Actions {
   [ActionTypes.RETRIEVE_SIGNED_USER]({
     commit,
   }: AugmentedActionContext): Promise<Unsubscribe>;
+  [ActionTypes.RETRIEVE_ROOM_DATA](
+    { commit }: AugmentedActionContext,
+    roomId: string
+  ): void;
+  [ActionTypes.UNSUBSCRIBE_ROOM_LISTENER]({
+    state,
+  }: ActionContext<RootState, RootState>): void;
 }
 
 export const actions: ActionTree<RootState, RootState> & Actions = {
@@ -65,5 +76,42 @@ export const actions: ActionTree<RootState, RootState> & Actions = {
     });
 
     return unsubscribe;
+  },
+
+  async [ActionTypes.RETRIEVE_ROOM_DATA]({ commit }, roomId) {
+    const roomRef = ref(database, `rooms/${roomId}`);
+
+    return new Promise((resolve) => {
+      const unsubscribeRoomListener = onValue(roomRef, (room) => {
+        const roomData = room.val();
+
+        const firebaseQuestions: FirebaseQuestions = roomData.questions ?? {};
+
+        //mapeia perguntas em array.
+        const parsedQuestions: Question[] = Object.entries(
+          firebaseQuestions
+        ).map(([key, question]) => {
+          return {
+            id: key,
+            author: question.author,
+            content: question.content,
+            isAnswered: question.isAnswered,
+            isHighlighted: question.isHighlighted,
+          };
+        });
+
+        commit(MutationTypes.SET_TITLE, roomData.title);
+        commit(MutationTypes.SET_QUESTIONS, parsedQuestions);
+        resolve(roomData);
+      });
+
+      commit(MutationTypes.SET_ROOM_UNSUBSCRIBE, unsubscribeRoomListener);
+    });
+  },
+
+  [ActionTypes.UNSUBSCRIBE_ROOM_LISTENER]({ state }) {
+    if (state.unsubscribe) {
+      state.unsubscribe();
+    }
   },
 };

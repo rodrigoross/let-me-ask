@@ -15,6 +15,9 @@ export const key: InjectionKey<Store<RootState>> = Symbol();
 export const store = createStore<RootState>({
   state: {
     user: undefined,
+    questions: [],
+    title: "",
+    unsubscribe: undefined,
   },
   mutations,
   actions,

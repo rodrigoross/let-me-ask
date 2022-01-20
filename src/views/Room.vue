@@ -30,11 +30,15 @@
         </div>
       </form>
 
-      <div class="newQuestion-list">
+      <div class="question-list">
         <img
           src="@/assets/icons/empty-questions.svg"
           alt="Sem perguntas exibidas"
+          v-if="!questions.length"
         />
+        <template v-else>
+          {{ JSON.stringify(questions) }}
+        </template>
       </div>
     </main>
   </div>
@@ -42,14 +46,18 @@
 
 <script lang="ts">
 import { useStore } from "@/store";
-import { computed, defineComponent, ref } from "vue";
-import { useRoute } from "vue-router";
+import { computed, defineComponent, onBeforeMount, ref } from "vue";
+import { onBeforeRouteLeave, useRoute } from "vue-router";
 
 import BaseButton from "@/components/BaseButton.vue";
 import RoomCode from "@/components/Room/RoomCode.vue";
 import { ActionTypes } from "@/store/actions";
 import { child, push, ref as databaseRef } from "@firebase/database";
 import { database } from "@/services/firebase";
+
+type RoomParams = {
+  id: string;
+};
 
 export default defineComponent({
   components: {
@@ -59,9 +67,12 @@ export default defineComponent({
   setup() {
     const store = useStore();
     const route = useRoute();
+    const params = route.params as RoomParams;
 
     const user = computed(() => store.state.user);
-    const roomId = ref(route.params.id);
+    const questions = computed(() => store.state.questions);
+    const roomTitle = computed(() => store.state.title);
+    const roomId = ref(params.id);
     const newQuestion = ref("");
 
     async function handleLogin() {
@@ -91,10 +102,20 @@ export default defineComponent({
       newQuestion.value = "";
     };
 
+    onBeforeMount(() => {
+      store.dispatch(ActionTypes.RETRIEVE_ROOM_DATA, roomId.value);
+    });
+
+    onBeforeRouteLeave(() => {
+      store.dispatch(ActionTypes.UNSUBSCRIBE_ROOM_LISTENER);
+    });
+
     return {
       user,
       roomId,
       newQuestion,
+      roomTitle,
+      questions,
       handleLogin,
       handleSendQuestion,
     };
