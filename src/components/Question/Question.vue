@@ -103,10 +103,10 @@ export default defineComponent({
 
     > div {
       display: flex;
-      gap: 0.875rem;
+      gap: 0.5rem;
     }
 
-    button {
+    ::v-slotted(button) {
       border: 0;
       background: transparent;
       cursor: pointer;

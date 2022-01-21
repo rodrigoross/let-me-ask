@@ -30,7 +30,7 @@ export interface Actions {
     commit,
   }: AugmentedActionContext): Promise<Unsubscribe>;
   [ActionTypes.RETRIEVE_ROOM_DATA](
-    { commit }: AugmentedActionContext,
+    { commit, state }: AugmentedActionContext,
     roomId: string
   ): void;
   [ActionTypes.UNSUBSCRIBE_ROOM_LISTENER]({
@@ -78,7 +78,7 @@ export const actions: ActionTree<RootState, RootState> & Actions = {
     return unsubscribe;
   },
 
-  async [ActionTypes.RETRIEVE_ROOM_DATA]({ commit }, roomId) {
+  async [ActionTypes.RETRIEVE_ROOM_DATA]({ commit, state }, roomId) {
     const roomRef = ref(database, `rooms/${roomId}`);
 
     return new Promise((resolve) => {
@@ -97,6 +97,10 @@ export const actions: ActionTree<RootState, RootState> & Actions = {
             content: question.content,
             isAnswered: question.isAnswered,
             isHighlighted: question.isHighlighted,
+            likeCount: Object.values(question.likes ?? {}).length,
+            likeId: Object.entries(question.likes ?? {}).find(
+              ([key, like]) => like.authorId === state.user?.id
+            )?.[0],
           };
         });
 

@@ -14,12 +14,12 @@ export type FirebaseQuestions = Record<
     content: string;
     isAnswered: boolean;
     isHighlighted: boolean;
-    // likes: Record<
-    //   string,
-    //   {
-    //     authorId: string;
-    //   }
-    // >;
+    likes: Record<
+      string,
+      {
+        authorId: string;
+      }
+    >;
   }
 >;
 
@@ -32,4 +32,6 @@ export interface Question {
   };
   isAnswered: boolean;
   isHighlighted: boolean;
+  likeCount: number;
+  likeId: string | undefined;
 }
