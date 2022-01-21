@@ -9,8 +9,10 @@
 
     <main>
       <div class="room-title">
-        <h1>Sala VueJS</h1>
-        <span>2 Perguntas</span>
+        <h1>Sala {{ roomTitle }}</h1>
+        <span v-if="questions.length > 0"
+          >{{ questions.length }} Pergunta(s)</span
+        >
       </div>
       <form>
         <textarea name="pergunta" id="pergunta" v-model="newQuestion" />
