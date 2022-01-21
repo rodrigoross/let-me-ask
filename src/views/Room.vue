@@ -26,7 +26,7 @@
             <button @click.prevent="handleLogin">faça seu login</button>.
           </span>
 
-          <BaseButton @click.prevent="handleSendQuestion">
+          <BaseButton @click.prevent="handleSendQuestion" :disabled="!user">
             Enviar pergunta
           </BaseButton>
         </div>
