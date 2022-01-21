@@ -106,7 +106,7 @@ export default defineComponent({
       gap: 0.5rem;
     }
 
-    ::v-slotted(button) {
+    :slotted(button) {
       border: 0;
       background: transparent;
       cursor: pointer;

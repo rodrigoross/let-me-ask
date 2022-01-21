@@ -25,6 +25,11 @@ const routes: Array<RouteRecordRaw> = [
     name: "Sala",
     component: () => import("@/views/Room.vue"),
   },
+  {
+    path: "/admins/rooms/:id",
+    name: "AdminRoom",
+    component: () => import("@/views/AdminRoom.vue"),
+  },
 ];
 
 const router = createRouter({

@@ -1,8 +1,22 @@
 <template>
-  <button class="button">
+  <button :class="['button', { outlined: isOutlined }]">
     <slot></slot>
   </button>
 </template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  props: {
+    isOutlined: {
+      type: Boolean,
+      default: false,
+    },
+  },
+});
+</script>
+
 
 <style lang="scss">
 .button {
