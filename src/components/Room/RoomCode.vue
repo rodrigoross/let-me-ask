@@ -1,5 +1,5 @@
 <template>
-  <button class="room-code">
+  <button class="room-code" @click="handleCopyRoomCode">
     <div>
       <img src="@/assets/icons/copy.svg" alt="Copiar código da sala" />
     </div>
@@ -16,6 +16,15 @@ export default defineComponent({
       type: String,
       required: true,
     },
+  },
+  setup(props) {
+    const handleCopyRoomCode = () => {
+      navigator.clipboard.writeText(props.code);
+    };
+
+    return {
+      handleCopyRoomCode,
+    };
   },
 });
 </script>
