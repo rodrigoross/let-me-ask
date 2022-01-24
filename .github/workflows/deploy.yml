@@ -1,0 +1,30 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Deployed to Production Environment
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  firebase-deploy:
+  #5. This is the OS of the virtual machine to which your code will be deployed against. It's best to use similar OS as the production server. If you using any of the cloud environments (most likely are linux based) then use ubuntu-latest.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+      - uses: actions/setup-node@master
+      - run: npm install
+      - run: npm run build
+      - uses: w9jds/firebase-action@master 
+        with:
+           args: deploy --only hosting
+        env:
+           FIREBASE_TOKEN: ${{ secrets.FirebaseDeploy }}
