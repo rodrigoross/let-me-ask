@@ -2,13 +2,13 @@
 
 name: Deployed to Production Environment
 
-# Controls when the workflow will run
+# Controls when the workflow willa run
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -16,15 +16,24 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   firebase-deploy:
-  #5. This is the OS of the virtual machine to which your code will be deployed against. It's best to use similar OS as the production server. If you using any of the cloud environments (most likely are linux based) then use ubuntu-latest.
+    #5. This is the OS of the virtual machine to which your code will be deployed against. It's best to use similar OS as the production server. If you using any of the cloud environments (most likely are linux based) then use ubuntu-latest.
     runs-on: ubuntu-latest
+    environment: Production
     steps:
       - uses: actions/checkout@main
       - uses: actions/setup-node@master
       - run: npm install
       - run: npm run build
-      - uses: w9jds/firebase-action@master 
+      - uses: w9jds/firebase-action@master
         with:
-           args: deploy --only hosting
+          args: deploy --only hosting
         env:
-           FIREBASE_TOKEN: ${{ secrets.FirebaseDeploy }}
+          FIREBASE_TOKEN: ${{ secrets.FirebaseDeploy }}
+          NODE_ENV: production
+          VUE_APP_API_KEY: ${{ sectres.API_KEY }}
+          VUE_APP_AUTH_DOMAIN: ${{ secrest.AUTH_DOMAIN}}
+          VUE_APP_DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          VUE_APP_PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          VUE_APP_STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
+          VUE_APP_MESSAGIN_SENDER_ID: ${{ secrets.MESSENGER_SENDER_ID }}
+          VUE_APP_APP_ID: ${{ secrets.APP_ID }}
