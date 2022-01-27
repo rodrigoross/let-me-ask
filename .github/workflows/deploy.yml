@@ -23,8 +23,11 @@ jobs:
       - uses: actions/checkout@main
       - uses: actions/setup-node@master
       - run: npm install
+      - run: 'echo "$ENV" > .env'
+        shell: bash
+        env:
+          ENV: ${{secrets.WEBSITE_ENV_PRODUCTION}}
       - run: npm run build
-      - run: echo "${{secrets.WEBSITE_ENV_PRODUCTION }}" > .env
       - uses: w9jds/firebase-action@master
         with:
           args: deploy --only hosting
