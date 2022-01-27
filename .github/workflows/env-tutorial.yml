@@ -14,11 +14,14 @@ jobs:
     steps:
       - uses: actions/checkout@main
       - uses: actions/setup-node@master
-      - run: npm install
       - run: |
           echo "$ENV" > .env.local
           cat .env.local
         shell: bash
         env:
           ENV: ${{secrets.ENV_DEV}}
+      - run: npm install
       - run: npm run build
+      - uses: w9jds/firebase-action@master
+        with:
+          args: deploy
