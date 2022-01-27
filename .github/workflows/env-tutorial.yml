@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Tutorialenv
+name: Tutorial Env
 
 # Controls when the workflow willa run
 on: [push]
@@ -16,7 +16,7 @@ jobs:
       - uses: actions/setup-node@master
       - run: npm install
       - run: |
-          'echo "$ENV" > .env.local'
+          echo "$ENV" > .env.local
           cat .env.local
         shell: bash
         env:
