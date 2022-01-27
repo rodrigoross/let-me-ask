@@ -24,16 +24,9 @@ jobs:
       - uses: actions/setup-node@master
       - run: npm install
       - run: npm run build
+      - run: echo "${{secrets.WEBSITE_ENV_PRODUCTION }}" > .env
       - uses: w9jds/firebase-action@master
         with:
           args: deploy --only hosting
         env:
           FIREBASE_TOKEN: ${{ secrets.FirebaseDeploy }}
-          NODE_ENV: production
-          VUE_APP_API_KEY: ${{ secrets.API_KEY }}
-          VUE_APP_AUTH_DOMAIN: ${{ secrets.AUTH_DOMAIN}}
-          VUE_APP_DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          VUE_APP_PROJECT_ID: ${{ secrets.PROJECT_ID }}
-          VUE_APP_STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
-          VUE_APP_MESSAGIN_SENDER_ID: ${{ secrets.MESSENGER_SENDER_ID }}
-          VUE_APP_APP_ID: ${{ secrets.APP_ID }}
